@@ -1,0 +1,4 @@
+.ccls-cache/
+.clang-format
+doc/
+compile_commands.json
