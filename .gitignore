@@ -2,3 +2,8 @@
 .clang-format
 doc/
 compile_commands.json
+src/deps/**
+src/exes/**
+src/objs/**
+*.out
+
