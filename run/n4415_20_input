@@ -2,16 +2,16 @@
 NACA 4415 airfoil with flap (20 deg.), incompressible flow
 #
 # Grid file (in)
-naca4415_flap20.ugr
+n4415_20.ugr
 #
 # Flow field to plot (out); 5 digit iteration number and .v2d will be added
-naca4415_flap20_iso
+n4415_20_iso
 #
 # Surface quantities to plot (out); 5 digit iteration number and .v2d will be added
-naca4415_flap20_surf
+n4415_20_surf
 #
 # Convergence history (out); .v2d will be added
-naca4415_flap20_conv
+n4415_20_conv
 #
 # Restart solution (in)
 solin
