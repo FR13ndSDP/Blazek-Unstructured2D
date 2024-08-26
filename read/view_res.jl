@@ -1,18 +1,46 @@
+# Usage: julia view_res.jl [path_to iso.v2d]
+
 using WriteVTK
-using DelimitedFiles
 
-res = readdlm("./res.txt", Float64)
-connection = readdlm("./res_connection.txt", Int64)
+f = open(ARGS[1], "r")
+case_name = readline(f)
+none = readline(f)
+none = readline(f)
 
-points = @view res[:, 1:2]
+# read number of variables
+var_number = readline(f)
+_,nvar = parse.(Int64, split(var_number, " "))
 
-cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE, connection[i, :].+1) for i in 1:size(connection)[1]]
+# read variable names
+name = Vector{String}(undef, nvar)
+for i in 1:nvar
+    name[i] = readline(f)
+end
 
-vtk_grid("result", points', cells) do vtk
-    vtk["rho"] = @view res[:, 3]
-    vtk["u"] = @view res[:, 4]
-    vtk["v"] = @view res[:, 5]
-    vtk["p"] = @view res[:, 6]
-    vtk["T"] = @view res[:, 7]
-    vtk["M"] = @view res[:, 8]
+# read number of nodes and triangles
+none = readline(f)
+nNodes,nTria = parse.(Int64, split(readline(f), " "))
+none = readline(f)
+
+# read result as a matrix, res[nvar, nNodes]
+res = Matrix{Float64}(undef, nvar, nNodes)
+for i in 1:nNodes
+    res[:, i] = parse.(Float64, split(readline(f), " "))
+end
+
+# read triangle connections
+connection = Matrix{Int64}(undef, 3, nTria)
+for i in 1:nTria
+    connection[:, i] = parse.(Int64, split(readline(f), " "))
+end
+
+
+# construct cells, onnection index must start from 1, so +1 here 
+cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE, connection[:, i].+1) for i in 1:nTria]
+points = @view res[1:2, :]
+
+vtk_grid(case_name, points, cells) do vtk
+    for i in 1:nvar
+        vtk[name[i]] = @view res[i, :]
+    end
 end
