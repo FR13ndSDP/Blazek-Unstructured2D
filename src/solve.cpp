@@ -27,6 +27,7 @@
 //*****************************************************************************
 
 #include "timeDiscr.h"
+#include "error.h"
 
 /// Integrates the four basic equations (continuity, momentum and energy) by
 /// the explicit, multi-stage (Runge-Kutta) time-stepping scheme.
@@ -73,37 +74,51 @@ void TimeDiscr::Solve( const Geometry &geometry, FluidProps &fluidProps, BndCond
       spaceDiscr.FluxViscous( geometry,fluidProps,betrk[irk] );
     }
 
-    // Roe's flux-difference splitting scheme (upwind)
+    if (spaceDiscr.GKS == 0) {
+      // Roe's flux-difference splitting scheme (upwind)
 
-    // limiter and upwind dissipation
-    if (dissipOn[irk])
-    {
-      if (spaceDiscr.order < 2)
+      // limiter and upwind dissipation
+      if (dissipOn[irk])
       {
-        if (precond.switchedOn)
-          spaceDiscr.DissipRoe1Prec( geometry,fluidProps,precond,betrk[irk] );
+        if (spaceDiscr.order < 2)
+        {
+          if (precond.switchedOn)
+            spaceDiscr.DissipRoe1Prec( geometry,fluidProps,precond,betrk[irk] );
+          else
+            spaceDiscr.DissipRoe1( geometry,fluidProps,betrk[irk] );
+        }
         else
-          spaceDiscr.DissipRoe1( geometry,fluidProps,betrk[irk] );
+        {
+          if (fluidProps.equsType==Equations::Euler)
+            spaceDiscr.Gradients( geometry,fluidProps );
+          spaceDiscr.LimiterInit( geometry,fluidProps );
+          spaceDiscr.Limiter( geometry,fluidProps );
+          if (precond.switchedOn)
+            spaceDiscr.DissipRoe2Prec( geometry,fluidProps,precond,betrk[irk] );
+          else
+            spaceDiscr.DissipRoe2( geometry,fluidProps,betrk[irk] );
+        }
       }
+
+      // convective flux; add upwind dissipation => residual
+      if (spaceDiscr.order < 2)
+        spaceDiscr.FluxRoe1( geometry,fluidProps );
       else
-      {
+        spaceDiscr.FluxRoe2( geometry,fluidProps );
+    } else if (spaceDiscr.GKS == 1) {
+      // KFVS
+      if (spaceDiscr.order < 2)
+        spaceDiscr.FluxKFVS1st( geometry,fluidProps);
+      else
         if (fluidProps.equsType==Equations::Euler)
           spaceDiscr.Gradients( geometry,fluidProps );
         spaceDiscr.LimiterInit( geometry,fluidProps );
         spaceDiscr.Limiter( geometry,fluidProps );
-        if (precond.switchedOn)
-          spaceDiscr.DissipRoe2Prec( geometry,fluidProps,precond,betrk[irk] );
-        else
-          spaceDiscr.DissipRoe2( geometry,fluidProps,betrk[irk] );
-      }
+        spaceDiscr.FluxKFVS2nd( geometry,fluidProps);
+    } else {
+        Error::Message( "GKS not implemented yet" );
     }
-
-    // convective flux; add upwind dissipation => residual
-    if (spaceDiscr.order < 2)
-      spaceDiscr.FluxRoe1( geometry,fluidProps );
-    else
-      spaceDiscr.FluxRoe2( geometry,fluidProps );
-
+  
     // preconditioning
 
     if (precond.switchedOn)

@@ -155,6 +155,7 @@ void UserInput::Read( const char *fileName, Solver &solver, Output &output )
   str = ReadLine( stream );
   str = ReadLine( stream );
 
+  str = ReadLine( stream ); solver.spaceDiscr.GKS     = stoi( str );
   str = ReadLine( stream ); solver.timeDiscr.cfl      = stod( str );
   str = ReadLine( stream ); solver.timeDiscr.epsIrs   = stod( str );
   str = ReadLine( stream ); solver.timeDiscr.nIterIrs = stoi( str );

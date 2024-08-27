@@ -61,13 +61,14 @@ solout
 #
 # Numerical parameters
 # --------------------
- 5.5       # CFL-number
+ 1         # flux type. 0: Roe, 1: KFVS, 2: GKS
+ 1.0       # CFL-number
  0.4       # coefficient of implicit residual smoothing (<0 = no smoothing)
  2         # no. of Jacobi iterations for residual smoothing
  L         # L=local, G=global time-stepping
  N         # low Mach-number preconditioning (Y=yes, N=no)
  0.15      # preconditioning parameter K
- 2         # first-order (1) / second-order (2) Roe scheme
+ 2          # first-order (1) / second-order (2) Roe/KFVS scheme
  1.0       # limiter coefficient (used only for 2nd-order Roe scheme)
  0.05      # entropy correction coefficient
  N         # correction of far-field due to single vortex (Y/N - external flow)

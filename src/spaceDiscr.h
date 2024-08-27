@@ -43,6 +43,7 @@ class SpaceDiscr
 {
 public:
  
+  int GKS;        /**< flux type, 0:no,use Roe, 1: kfvs  2: GKS*/
   int  order;     /**< order of the scheme (1 or 2) */
   REAL limfac,    /**< limiter coefficient */
        epsEntr;   /**< entropy correction coefficient */
@@ -61,6 +62,9 @@ public:
   void DissipRoe2( const Geometry &geometry, const FluidProps &fluidProps, REAL beta );
   void DissipRoe2Prec( const Geometry &geometry, const FluidProps &fluidProps,
                        const Precond &precond, REAL beta );
+  
+  void FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidProps );
+  void FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidProps );
   void FluxRoe1( const Geometry &geometry, const FluidProps &fluidProps );
   void FluxRoe2( const Geometry &geometry, const FluidProps &fluidProps );
   void FluxWalls( const Geometry &geometry, const FluidProps &fluidProps );
