@@ -39,7 +39,7 @@ end
 cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE, connection[:, i].+1) for i in 1:nTria]
 points = @view res[1:2, :]
 
-vtk_grid(case_name, points, cells) do vtk
+vtk_grid("out", points, cells) do vtk
     for i in 1:nvar
         vtk[name[i]] = @view res[i, :]
     end

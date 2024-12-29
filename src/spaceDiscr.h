@@ -63,8 +63,8 @@ public:
   void DissipRoe2Prec( const Geometry &geometry, const FluidProps &fluidProps,
                        const Precond &precond, REAL beta );
   
-  void FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidProps );
-  void FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidProps );
+  void FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidProps, REAL beta );
+  void FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidProps, REAL beta );
   void FluxRoe1( const Geometry &geometry, const FluidProps &fluidProps );
   void FluxRoe2( const Geometry &geometry, const FluidProps &fluidProps );
   void FluxWalls( const Geometry &geometry, const FluidProps &fluidProps );

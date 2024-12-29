@@ -1,4 +1,4 @@
-/// @file dissipRoe1.cpp
+/// @file kfvs.cpp
 ///
 /// Computation of 1st-order upwind dissipation.
 ///
@@ -35,10 +35,11 @@
 /// @param geometry    geometrical data
 /// @param fluidProps  fluid properties
 ///
-void SpaceDiscr::FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidProps )
+void SpaceDiscr::FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidProps,
+                              REAL beta )
 {
   int  i, j, ie;
-  REAL ds, nx, ny, rrho, rl, ul, vl, pl, rr, ur, vr, pr;
+  REAL ds, nx, ny, rrho, rl, ul, vl, pl, rr, ur, vr, pr, beta5;
   REAL fd[4];
 
   CONSVARS       *cv   = fluidProps.cv;
@@ -49,6 +50,7 @@ void SpaceDiscr::FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidP
   double *primL = new double [4];
   double *primR = new double [4];
 
+  beta5 = 0.5*beta;
 
   for (ie=0; ie<geometry.nEdges; ie++)
   {
@@ -104,6 +106,7 @@ void SpaceDiscr::FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidP
     fd[3] = flux[3];
 
 
+    ds          *= beta5;
     rhs[i].dens += fd[0]*ds;
     rhs[i].xmom += fd[1]*ds;
     rhs[i].ymom += fd[2]*ds;
@@ -126,10 +129,11 @@ void SpaceDiscr::FluxKFVS1st( const Geometry &geometry, const FluidProps &fluidP
 /// @param geometry    geometrical data
 /// @param fluidProps  fluid properties
 ///
-void SpaceDiscr::FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidProps )
+void SpaceDiscr::FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidProps,
+                              REAL beta )
 {
   int  i, j, ie;
-  REAL ds, nx, ny, rx, ry, rrho, rl, ul, vl, pl, rr, ur, vr, pr;
+  REAL ds, nx, ny, rx, ry, rrho, rl, ul, vl, pl, rr, ur, vr, pr, beta5;
   REAL fd[4];
 
   CONSVARS       *cv   = fluidProps.cv;
@@ -141,6 +145,7 @@ void SpaceDiscr::FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidP
   double *primL = new double [4];
   double *primR = new double [4];
 
+  beta5 = 0.5*beta;
 
   for (ie=0; ie<geometry.nEdges; ie++)
   {
@@ -197,7 +202,7 @@ void SpaceDiscr::FluxKFVS2nd( const Geometry &geometry, const FluidProps &fluidP
     fd[2] = flux[1]*ny+flux[2]*nx;
     fd[3] = flux[3];
 
-
+    ds          *= beta5;
     rhs[i].dens += fd[0]*ds;
     rhs[i].xmom += fd[1]*ds;
     rhs[i].ymom += fd[2]*ds;

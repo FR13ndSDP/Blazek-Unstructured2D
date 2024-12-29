@@ -108,13 +108,13 @@ void TimeDiscr::Solve( const Geometry &geometry, FluidProps &fluidProps, BndCond
     } else if (spaceDiscr.GKS == 1) {
       // KFVS
       if (spaceDiscr.order < 2) {
-        spaceDiscr.FluxKFVS1st( geometry,fluidProps);
+        spaceDiscr.FluxKFVS1st( geometry,fluidProps,betrk[irk]);
       } else {
         if (fluidProps.equsType==Equations::Euler)
           spaceDiscr.Gradients( geometry,fluidProps );
         spaceDiscr.LimiterInit( geometry,fluidProps );
         spaceDiscr.Limiter( geometry,fluidProps );
-        spaceDiscr.FluxKFVS2nd( geometry,fluidProps);
+        spaceDiscr.FluxKFVS2nd( geometry,fluidProps,betrk[irk]);
       }
     } else {
         Error::Message( "GKS not implemented yet" );
