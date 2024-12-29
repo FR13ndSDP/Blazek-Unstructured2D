@@ -61,7 +61,7 @@ solout
 #
 # Numerical parameters
 # --------------------
- 1         # flux type. 0: Roe, 1: KFVS, 2: GKS
+ 0         # flux type. 0: Roe, 1: KFVS, 2: GKS
  5.0       # CFL-number
  0.6       # coefficient of implicit residual smoothing (<0 = no smoothing)
  2         # no. of Jacobi iterations for residual smoothing
